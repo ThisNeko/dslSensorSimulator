@@ -1,9 +1,20 @@
-time 10
+duration 10
 
-//law "name" type "LawPolynomial" value [1,2,3]
+lawPolynomial "poly" value ([1.0d,2.0d,3.0d])
+lawRandom "random"
 
-sensor "try"
-sensor "boy"
-sensor "hello"
+
+zone "parking" nbSensor 5 using "poly"
+
+
+sensor "try" using "poly" on "noName"
+sensor "rand" using "random" on "noName"
+sensor "test" using "poly" on "parking"
+
+lot 3 using "random" on "parking"
+
+writeOn "csv"
+//writeOn "influxDB"
+//writeOn "terminal"
 
 go "Simulation"

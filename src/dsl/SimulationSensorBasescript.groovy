@@ -6,23 +6,46 @@ import java.util.List;
 abstract class SimulationSensorBasescript extends Script {	
 	
 	
-    def time(int ticks){
+    def duration(int ticks){
     	((SimulationSensorBinding)this.getBinding()).getSimulationSensorModel().setTime(ticks)
     }
 
+
     def zone(String name){
-    	[nbRandom: {n -> 
-    		[nbNeperien: {nb ->
-    			((SimulationSensorBinding)this.getBinding()).getSimulationSensorModel().createZone(name,n,nb) 
+    	[nbSensor: {n->
+    		[using: {behavior->
+    			((SimulationSensorBinding)this.getBinding()).getSimulationSensorModel().createZone(name,n,behavior)
     		}]
-    			
     	}]
+    }
+
+    def lot(int nbSensor){
+    	[using: {behavior ->
+    		[on: {zone->
+    			((SimulationSensorBinding)this.getBinding()).getSimulationSensorModel().addSensorToZone(nbSensor,behavior,zone)
+    		}]
+    	}]
+    }
+
+    def lawRandom(String name){
+    	((SimulationSensorBinding)this.getBinding()).getSimulationSensorModel().createLawRandom(name)
+    }
+
+    def lawPolynomial(String name){
+    	[value: {n -> 
+    		((SimulationSensorBinding)this.getBinding()).getSimulationSensorModel().createLawPolynomial(name,n)
+    		}]
     }
     
 
 	
 	def sensor(String name){
-		((SimulationSensorBinding)this.getBinding()).getSimulationSensorModel().createSensor(name)
+		[using: {law ->
+			[on: {zone->
+				((SimulationSensorBinding)this.getBinding()).getSimulationSensorModel().createSensor(name,law,zone)
+			}]
+
+		}]
 	}
 
 	// disable run method while running
@@ -39,5 +62,9 @@ abstract class SimulationSensorBasescript extends Script {
 
 	def go(String n) { 
 		((SimulationSensorBinding)this.getBinding()).getSimulationSensorModel().run(n)
+	}
+
+	def writeOn(String type){
+		((SimulationSensorBinding)this.getBinding()).getSimulationSensorModel().writeType(type)
 	}
 }

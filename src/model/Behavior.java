@@ -8,7 +8,7 @@ import utils.NamedElement;
 
 public abstract class Behavior implements NamedElement{
 
-	String name;
+	private String name;
 
 	public String getName() {
 		return name;
