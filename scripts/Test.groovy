@@ -13,8 +13,8 @@ sensor "test" using "poly" on "parking"
 
 lot 3 using "random" on "parking"
 
-writeOn "csv"
-//writeOn "influxDB"
+//writeOn "csv"
+writeOn "influxDB"
 //writeOn "terminal"
 
 go "Simulation"

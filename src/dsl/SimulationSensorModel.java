@@ -153,9 +153,12 @@ public class SimulationSensorModel {
 		String type = (String)this.binding.getVariable("writeType");
 		if(type=="csv"){
 			simu.execCSV((int)this.binding.getVariable("time"));
+		} else if(type=="influxDB") {
+			simu.execDB((int)this.binding.getVariable("time"));
 		} else {
 			simu.exec((int)this.binding.getVariable("time"));
 		}
+		
 
 	}
 
