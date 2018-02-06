@@ -3,8 +3,9 @@ package dsl;
 import java.util.*;
 
 import groovy.lang.Binding;
-import model.Simulation;
-import model.Capteur;
+import model.*;
+import model.law.*;
+import model.law.LawRandom;
 import model.CapteurRandom;
 import model.CapteurNeperien;
 import java.io.PrintWriter;
@@ -28,78 +29,36 @@ public class SimulationSensorModel {
 	private BatchPoints batchPoints;
 	
 	private Binding binding;
-	private List<Capteur> sensors;
-	
+	private List<Sensor> sensorsList;
+	private List<Zone> zonesList;
+	private Zone z;
+
 	public SimulationSensorModel(Binding binding) {		
 		this.binding = binding;
-		this.sensors=new ArrayList<Capteur>();
+		this.sensorsList=new ArrayList<Sensor>();
+		this.zonesList=new ArrayList<Zone>();
+		this.z = new Zone("noName");
+		zonesList.add(z);
 
-		influxDB = InfluxDBFactory.connect("http://localhost:8086", "root", "root");
-		influxDB.createDatabase("yop");
-		influxDB.createRetentionPolicy("defaultPolicy", "yop", "30d", 1, true);
-		
-	    batchPoints = BatchPoints
-	    .database("yop")
-        .retentionPolicy("defaultPolicy")
-        .build();
-	    influxDB.enableBatch(100, 200, TimeUnit.MILLISECONDS);
-
+	
 	}
 
 	public void createSensor(String name) {
-		
 
+		Sensor sensor = new Sensor(name,new LawRandom());
+		//sensorsList.add(sensor);
+		z.add(sensor);
 
-
-
- 
-
-		Capteur sensor = new CapteurRandom();
-		//sensor.setName(name);
-		//sensor.setType(type);
-		//this.sensors.add(sensor);
-		//this.binding.setVariable(name, sensor);
-
-		/*Point point = Point.measurement("capteurs")		
-		.time(System.currentTimeMillis(), TimeUnit.MILLISECONDS)
-		.addField("time", System.currentTimeMillis())
-        .addField("capteur", name)
-        .addField("value", sensor.low())
-        .build();
-
-        Point point = Point.measurement("capteurs")		
-		.time(System.currentTimeMillis(), TimeUnit.MILLISECONDS)
-		.addField("time", System.currentTimeMillis())
-        .addField("capteur", name)
-        .addField("value", sensor.low())
-        .build();*/
-
-        
-
-
-		for(int i =0;i<(int)this.binding.getVariable("time");i++){
-			System.out.println("sensor " + name + " value : "+ sensor.law(i));
-			Point point = Point.measurement("capteurs")		
-		.time(System.currentTimeMillis(), TimeUnit.MILLISECONDS)
-		.addField("time", System.currentTimeMillis())
-        .addField("capteur", name)
-        .addField("value", sensor.law(i))
-        .build();
-
-        batchPoints.point(point);
-        
-			
-		}
-
-		
-    //influxDB.enableBatch(100, 200, TimeUnit.MILLISECONDS);
-    influxDB.write(batchPoints);
-
+		//System.out.println(name);
 
 	}
 
 	public void setTime(int ticks){
 		this.binding.setVariable("time",ticks);
+	}
+
+	public void setDuration(int value){
+		this.binding.setVariable("duration",value);
 	}
 		
 	public void createZone(String name, int nbRandom, int nbNeperien) throws IOException{
@@ -138,6 +97,21 @@ public class SimulationSensorModel {
 			}
 		}
 		writer.close();
+	}
+
+
+	public void run(String name){
+		Simulation simu = new Simulation();
+		simu.setZones(zonesList);
+		simu.exec((int)this.binding.getVariable("time"));
+
+
+
+		/*for(int j =0;j<(int)this.binding.getVariable("time");j++){
+			for(int i=0;i<sensorsList.size();i++){
+				System.out.println(j+","+sensorsList.get(i).getName()+","+sensorsList.get(i).getValue(j));				
+			}
+		}*/
 	}
 
 

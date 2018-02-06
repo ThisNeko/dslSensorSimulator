@@ -3,11 +3,17 @@ package model;
 
 import java.util.ArrayList;
 import java.util.List;
+import utils.NamedElement;
 
-public class Zone {
+public class Zone implements NamedElement{
 
 	private String name;	
-	List<Capteur> capteurs;	
+	List<Sensor> sensors;
+
+	public Zone(String name){
+		this.name=name;
+		sensors=new ArrayList<Sensor>();
+	}	
 	
 	public String getName() {
 		return name;
@@ -17,12 +23,16 @@ public class Zone {
 		this.name = name;
 	}
 
-	public List<Capteur> getCapteurs() {
-		return capteurs;
+	public List<Sensor> getSensors() {
+		return sensors;
 	}
 
-	public void setCapteurs(List<Capteur> capteurs) {
-		this.capteurs = capteurs;
+	public void setSensors(List<Sensor> capteurs) {
+		this.sensors = sensors;
+	}
+
+	public void add(Sensor s){
+		this.sensors.add(s);
 	}
 
 	

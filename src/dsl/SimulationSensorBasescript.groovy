@@ -36,4 +36,8 @@ abstract class SimulationSensorBasescript extends Script {
 			println "Run method is disabled"
 		}
 	}
+
+	def go(String n) { 
+		((SimulationSensorBinding)this.getBinding()).getSimulationSensorModel().run(n)
+	}
 }
