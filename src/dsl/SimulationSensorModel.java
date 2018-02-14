@@ -1,7 +1,7 @@
 package dsl;
 
 import java.util.*;
-
+import model.dataset.*;
 import groovy.lang.Binding;
 import model.*;
 import model.law.*;
@@ -144,6 +144,10 @@ public class SimulationSensorModel {
 		this.binding.setVariable("writeType",type);
 	}
 
+	public  void Reapplicate(String sensor,String in,String out) throws IOException, InterruptedException{
+		SimpleCSVParser par = new  SimpleCSVParser(sensor,in,out);
+						par.run();
+	}
 
 	public void run(String name) throws IOException{
 

@@ -67,4 +67,15 @@ abstract class SimulationSensorBasescript extends Script {
 	def writeOn(String type){
 		((SimulationSensorBinding)this.getBinding()).getSimulationSensorModel().writeType(type)
 	}
+	def applicatelow(String sensor) {
+		[from: { file ->
+			[to: { output ->
+				((SimulationSensorBinding) this.getBinding()).getSimulationSensorModel().Reapplicate(sensor, file, output)
+			}]
+		}]
+	}
 }
+
+
+
+

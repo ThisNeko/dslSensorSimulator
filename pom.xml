@@ -16,7 +16,12 @@
 		<groovy.version.short>2.3</groovy.version.short>
 	</properties>
 
-	<dependencies>		
+	<dependencies>
+		<dependency>
+			<groupId>com.opencsv</groupId>
+			<artifactId>opencsv</artifactId>
+			<version>3.8</version>
+		</dependency>
 		<dependency>
 			<groupId>org.codehaus.groovy</groupId>
 			<artifactId>groovy-all</artifactId>
@@ -39,6 +44,7 @@
 					<compilerId>groovy-eclipse-compiler</compilerId>
 				</configuration>
 				<dependencies>
+
 					<dependency>
 						<groupId>org.codehaus.groovy</groupId>
 						<artifactId>groovy-eclipse-compiler</artifactId>
