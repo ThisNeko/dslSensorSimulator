@@ -6,8 +6,6 @@ import groovy.lang.Binding;
 import model.*;
 import model.law.*;
 import model.law.LawRandom;
-import model.CapteurRandom;
-import model.CapteurNeperien;
 import java.io.PrintWriter;
 import java.io.File;
 import java.io.IOException;
@@ -65,8 +63,8 @@ public class SimulationSensorModel {
 		//System.out.println(law.generateData(5));
 	}
 
-	public void createLawRandom(String name){
-		Behavior law = new LawRandom();
+	public void createLawRandom(String name,int n, int m){
+		Behavior law = new LawRandom(n,m);
 		law.setName(name);
 		this.binding.setVariable(name,law);
 	}

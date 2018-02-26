@@ -11,14 +11,6 @@ abstract class SimulationSensorBasescript extends Script {
     }
 
 
-    /*def zone(String name){
-    	[nbSensor: {n->
-    		[using: {behavior->
-    			((SimulationSensorBinding)this.getBinding()).getSimulationSensorModel().createZone(name,n,behavior)
-    		}]
-    	}]
-    }*/
-
     def zone(String name){
     	((SimulationSensorBinding)this.getBinding()).getSimulationSensorModel().createZone(name)
     }
@@ -32,7 +24,11 @@ abstract class SimulationSensorBasescript extends Script {
     }
 
     def lawRandom(String name){
-    	((SimulationSensorBinding)this.getBinding()).getSimulationSensorModel().createLawRandom(name)
+    	[between: {n ->
+    		[and: {m->
+    			((SimulationSensorBinding)this.getBinding()).getSimulationSensorModel().createLawRandom(name,n,m)
+    		}]
+    	}]
     }
 
     def lawPolynomial(String name){

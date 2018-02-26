@@ -2,7 +2,7 @@
 duration 10
 lawPolynomial "poly" value ([1.0d,2.0d,3.0d])
 lawPolynomial "poly2" value ([1.0d,2.0d,1.0d])
-lawRandom "random"
+lawRandom "random" between 10 and 20
 zone "parking"
 
 aggregate "parking"
@@ -16,8 +16,8 @@ lot 3 using "random" on "roof_E"
 
 aggregate "roof_E"
 
-//writeOn "csv"
-writeOn "influxDB"
+writeOn "csv"
+//writeOn "influxDB"
 //writeOn "terminal"
 
 go "Simulation"
