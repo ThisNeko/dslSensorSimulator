@@ -35,5 +35,13 @@ public class Zone implements NamedElement{
 		this.sensors.add(s);
 	}
 
+	public String runAsAggregate(int t){
+		double sum = 0;
+		for(int i=0;i<sensors.size();i++){
+			sum+=Double.parseDouble(sensors.get(i).getValue(t));
+		}
+		return sum+"";
+	}
+
 	
 }

@@ -35,7 +35,9 @@ public class LawPolynomial extends Law{
 		for(int i= 1;i<this.xs.size();i++){
 			sum+=this.xs.get(i)*Math.pow(value,i);
 		}
-
+		
+	    sum+=sum*(Math.random()*this.getNoise()*2-this.getNoise())/100.0;
+		
 		return sum+"";
 		//return "";
 	}

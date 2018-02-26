@@ -11,12 +11,16 @@ abstract class SimulationSensorBasescript extends Script {
     }
 
 
-    def zone(String name){
+    /*def zone(String name){
     	[nbSensor: {n->
     		[using: {behavior->
     			((SimulationSensorBinding)this.getBinding()).getSimulationSensorModel().createZone(name,n,behavior)
     		}]
     	}]
+    }*/
+
+    def zone(String name){
+    	((SimulationSensorBinding)this.getBinding()).getSimulationSensorModel().createZone(name)
     }
 
     def lot(int nbSensor){
@@ -67,6 +71,12 @@ abstract class SimulationSensorBasescript extends Script {
 	def writeOn(String type){
 		((SimulationSensorBinding)this.getBinding()).getSimulationSensorModel().writeType(type)
 	}
+
+	def aggregate(String name){
+		((SimulationSensorBinding)this.getBinding()).getSimulationSensorModel().aggregateZone(name)
+	}
+
+
 	def applicatelow(String sensor) {
 		[from: { file ->
 			[to: { output ->
@@ -75,7 +85,3 @@ abstract class SimulationSensorBasescript extends Script {
 		}]
 	}
 }
-
-
-
-

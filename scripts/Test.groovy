@@ -1,17 +1,20 @@
+// Définition
 duration 10
-
 lawPolynomial "poly" value ([1.0d,2.0d,3.0d])
+lawPolynomial "poly2" value ([1.0d,2.0d,1.0d])
 lawRandom "random"
+zone "parking"
 
+aggregate "parking"
 
-zone "parking" nbSensor 5 using "poly"
-
-
-sensor "try" using "poly" on "noName"
-sensor "rand" using "random" on "noName"
+sensor "try" using "poly" on "classroom_O+106"
+sensor "rand" using "random" on "roof_E"
 sensor "test" using "poly" on "parking"
+sensor "test2" using "poly2" on "parking"
 
-lot 3 using "random" on "parking"
+lot 3 using "random" on "roof_E"
+
+aggregate "roof_E"
 
 //writeOn "csv"
 writeOn "influxDB"

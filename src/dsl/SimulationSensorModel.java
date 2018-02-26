@@ -14,32 +14,27 @@ import java.io.IOException;
 
 import java.util.concurrent.TimeUnit;
 
-import org.influxdb.InfluxDB;
-import org.influxdb.InfluxDBFactory;
-import org.influxdb.InfluxDBIOException;
-import org.influxdb.dto.*;
-import org.influxdb.impl.InfluxDBResultMapper;
 
 
 
 public class SimulationSensorModel {
 	
-
-	private InfluxDB influxDB;
-	private BatchPoints batchPoints;
 	
 	private Binding binding;
 	private List<Sensor> sensorsList;
 	private List<Zone> zonesList;
+	private List<Zone> aggregateZones;
 	private Zone z;
 
 	public SimulationSensorModel(Binding binding) {		
 		this.binding = binding;
 		this.sensorsList=new ArrayList<Sensor>();
 		this.zonesList=new ArrayList<Zone>();
+		this.aggregateZones=new ArrayList<Zone>();
 		this.z = new Zone("noName");
 		this.binding.setVariable("noName",z);
-		zonesList.add(z);	
+		zonesList.add(z);
+		
 		this.binding.setVariable("writeType","terminal");	
 
 	
@@ -48,7 +43,11 @@ public class SimulationSensorModel {
 	public void createSensor(String name, String behavior, String zone) {
 
 		//Sensor sensor = new Sensor(name,new LawRandom());	
-		Sensor sensor = new Sensor(name,(Behavior)this.binding.getVariable(behavior));			
+		Sensor sensor = new Sensor(name,(Behavior)this.binding.getVariable(behavior));	
+
+		if(!this.binding.hasVariable(zone)){
+			createZone(zone);
+		}		
 		//sensorsList.add(sensor);
 		((Zone)this.binding.getVariable(zone)).add(sensor);
 		//z.add(sensor);
@@ -56,6 +55,7 @@ public class SimulationSensorModel {
 		//System.out.println(name);
 
 	}
+
 
 	public void createLawPolynomial(String name,ArrayList<Double> list){
 		Behavior law = new LawPolynomial(list);
@@ -78,45 +78,7 @@ public class SimulationSensorModel {
 	public void setDuration(int value){
 		this.binding.setVariable("duration",value);
 	}
-		
-	/*public void createZone(String name, int nbRandom, int nbNeperien) throws IOException{
-		List<Capteur> l = new ArrayList<Capteur>();
-		File file = new File("result/"+name+".csv");
-		file.getParentFile().mkdirs();
-		int nb = nbRandom + nbNeperien;
-
-		for(int i=0;i<nbRandom;i++){
-			l.add(new CapteurRandom());
-		}
-		for(int i=0;i<nbNeperien;i++){
-			l.add(new CapteurNeperien());
-		}
-
-		PrintWriter writer = new PrintWriter(file);
-
-		for(int i =0;i<nb;i++){
-			if(i == nb-1){
-				//System.out.printf("sensor"+i+"\n");
-				writer.printf("sensor"+i+"\n");
-			} else {
-				//System.out.printf("sensor"+i+",");
-				writer.printf("sensor"+i+",");
-			}
-		}
-		for(int i =0;i<(int)this.binding.getVariable("time");i++){
-			for(int j=0;j<nb;j++){
-				if(j==nb-1){
-					//System.out.printf(l.get(j).law()+"\n");
-					writer.printf(l.get(j).law(i)+"\n");
-				} else {
-					//System.out.printf(l.get(j).law()+",");
-					writer.printf(l.get(j).law(i)+",");
-				}
-			}
-		}
-		writer.close();
-	}*/
-
+			
 	public void createZone(String name, int nbSensor,String behavior) {
 		Zone zone = new Zone(name);
 
@@ -131,28 +93,39 @@ public class SimulationSensorModel {
 
 	}
 
+	public void createZone(String name) {
+		Zone zone = new Zone(name);	
+
+
+		zonesList.add(zone);
+		this.binding.setVariable(name,zone);
+
+	}
+
 	public void addSensorToZone(int nbSensor,String behavior,String zone){
+		if(!this.binding.hasVariable(zone)){
+			createZone(zone);
+		}
+
 		int nbInZone = ((Zone)this.binding.getVariable(zone)).getSensors().size();
 		Behavior b = (Behavior)this.binding.getVariable(behavior);
 		for(int i=0;i<nbSensor;i++){
 			Sensor s = new Sensor("sensor"+zone+(nbInZone+i),b);
 			((Zone)this.binding.getVariable(zone)).add(s);
 		}
+		
 	}
 
 	public void writeType(String type){
 		this.binding.setVariable("writeType",type);
 	}
 
-	public  void Reapplicate(String sensor,String in,String out) throws IOException, InterruptedException{
-		SimpleCSVParser par = new  SimpleCSVParser(sensor,in,out);
-						par.run();
-	}
 
 	public void run(String name) throws IOException{
 
 		Simulation simu = new Simulation(name);
 		simu.setZones(zonesList);
+		simu.setAggregates(aggregateZones);
 
 		String type = (String)this.binding.getVariable("writeType");
 		if(type=="csv"){
@@ -164,6 +137,17 @@ public class SimulationSensorModel {
 		}
 		
 
+	}
+
+	public void aggregateZone(String zone){
+		if(this.binding.hasVariable(zone)){
+			aggregateZones.add((Zone)this.binding.getVariable(zone));
+		}
+	}
+
+	public  void Reapplicate(String sensor,String in,String out) throws IOException, InterruptedException{
+		SimpleCSVParser par = new  SimpleCSVParser(sensor,in,out);
+						par.run();
 	}
 
 
