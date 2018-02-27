@@ -69,7 +69,9 @@ abstract class SimulationSensorBasescript extends Script {
 	}
 
 	def aggregate(String name){
-		((SimulationSensorBinding)this.getBinding()).getSimulationSensorModel().aggregateZone(name)
+		[using: {type->
+			((SimulationSensorBinding)this.getBinding()).getSimulationSensorModel().aggregateZone(name,type)
+		}]
 	}
 
 
@@ -80,4 +82,10 @@ abstract class SimulationSensorBasescript extends Script {
 			}]
 		}]
 	}
+
+
+	def lawFunction(String name, Closure c){
+		((SimulationSensorBinding) this.getBinding()).getSimulationSensorModel().createLawFunction(name,c)
+	}
+	
 }

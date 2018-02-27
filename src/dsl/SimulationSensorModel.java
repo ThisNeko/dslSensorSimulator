@@ -9,6 +9,7 @@ import model.law.LawRandom;
 import java.io.PrintWriter;
 import java.io.File;
 import java.io.IOException;
+import groovy.lang.Closure;
 
 import java.util.concurrent.TimeUnit;
 
@@ -137,15 +138,23 @@ public class SimulationSensorModel {
 
 	}
 
-	public void aggregateZone(String zone){
+	public void aggregateZone(String zone,String type){
 		if(this.binding.hasVariable(zone)){
 			aggregateZones.add((Zone)this.binding.getVariable(zone));
+			((Zone)this.binding.getVariable(zone)).setAggregateType(type);
 		}
 	}
 
 	public  void Reapplicate(String sensor,String in,String out) throws IOException, InterruptedException{
 		SimpleCSVParser par = new  SimpleCSVParser(sensor,in,out);
 						par.run();
+	}
+
+
+	public void createLawFunction(String name,Closure c){
+		Behavior law = new LawFunction(c);
+		law.setName(name);
+		this.binding.setVariable(name,law);
 	}
 
 
